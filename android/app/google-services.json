@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "858975743054",
+    "project_id": "alertx-4804c",
+    "storage_bucket": "alertx-4804c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858975743054:android:b8fc66401c3defb40f671f",
+        "android_client_info": {
+          "package_name": "com.alertx.app.alertx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNpXgDK2Ist3e0_w1L2WxWQWONvwLCw34"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
