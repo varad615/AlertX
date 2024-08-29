@@ -54,10 +54,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             .doc('contacts')
             .set({
           'contact_1': '',
+          'contact_1_name': '',
           'contact_2': '',
+          'contact_2_name': '',
           'contact_3': '',
+          'contact_3_name': '',
           'contact_4': '',
+          'contact_4_name': '',
           'contact_5': '',
+          'contact_5_name': '',
         });
 
         Navigator.pushAndRemoveUntil(

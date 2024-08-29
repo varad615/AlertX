@@ -11,10 +11,15 @@ class _ContactPageState extends State<ContactPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  final _contact1nameController = TextEditingController();
   final _contact1Controller = TextEditingController();
+  final _contact2nameController = TextEditingController();
   final _contact2Controller = TextEditingController();
+  final _contact3nameController = TextEditingController();
   final _contact3Controller = TextEditingController();
+  final _contact4nameController = TextEditingController();
   final _contact4Controller = TextEditingController();
+  final _contact5nameController = TextEditingController();
   final _contact5Controller = TextEditingController();
 
   @override
@@ -37,10 +42,15 @@ class _ContactPageState extends State<ContactPage> {
 
         if (contactDoc.exists) {
           final contactData = contactDoc.data();
+          _contact1nameController.text = contactData?['contact_1_name'] ?? '';
           _contact1Controller.text = contactData?['contact_1'] ?? '';
+          _contact2nameController.text = contactData?['contact_2_name'] ?? '';
           _contact2Controller.text = contactData?['contact_2'] ?? '';
+          _contact3nameController.text = contactData?['contact_3_name'] ?? '';
           _contact3Controller.text = contactData?['contact_3'] ?? '';
+          _contact4nameController.text = contactData?['contact_4_name'] ?? '';
           _contact4Controller.text = contactData?['contact_4'] ?? '';
+          _contact5nameController.text = contactData?['contact_5_name'] ?? '';
           _contact5Controller.text = contactData?['contact_5'] ?? '';
         }
       } catch (e) {
@@ -60,10 +70,15 @@ class _ContactPageState extends State<ContactPage> {
             .collection('contact')
             .doc('contacts')
             .update({
+          'contact_1_name': _contact1nameController.text,
           'contact_1': _contact1Controller.text,
+          'contact_2_name': _contact2nameController.text,
           'contact_2': _contact2Controller.text,
+          'contact_3_name': _contact3nameController.text,
           'contact_3': _contact3Controller.text,
+          'contact_4_name': _contact4nameController.text,
           'contact_4': _contact4Controller.text,
+          'contact_5_name': _contact5nameController.text,
           'contact_5': _contact5Controller.text,
         });
 
@@ -86,45 +101,134 @@ class _ContactPageState extends State<ContactPage> {
         title: Text('Contact Information'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            TextFormField(
-              controller: _contact1Controller,
-              decoration: InputDecoration(
-                labelText: 'Contact 1',
+        padding: EdgeInsets.only(left: 20.0, right: 20.0), // Add padding only to left and right
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _contact1nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 1 Name',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _contact1Controller,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 1 Number',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            TextFormField(
-              controller: _contact2Controller,
-              decoration: InputDecoration(
-                labelText: 'Contact 2',
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _contact2nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 2 Name',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _contact2Controller,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 2 Number',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            TextFormField(
-              controller: _contact3Controller,
-              decoration: InputDecoration(
-                labelText: 'Contact 3',
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _contact3nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 3 Name',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _contact3Controller,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 3 Number',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            TextFormField(
-              controller: _contact4Controller,
-              decoration: InputDecoration(
-                labelText: 'Contact 4',
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _contact4nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 4 Name',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _contact4Controller,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 4 Number',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            TextFormField(
-              controller: _contact5Controller,
-              decoration: InputDecoration(
-                labelText: 'Contact 5',
+              Card(
+                elevation: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _contact5nameController,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 5 Name',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _contact5Controller,
+                        decoration: InputDecoration(
+                          labelText: 'Contact 5 Number',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _setContacts,
-              child: Text('Set Contacts'),
-            ),
-          ],
+              SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _setContacts,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF3045D3),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),elevation: 0,shadowColor: Colors.transparent
+                  ),
+                  child: Text('Set Contacts', style: TextStyle(color: Colors.white),),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
