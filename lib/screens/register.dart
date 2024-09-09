@@ -65,6 +65,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           'contact_5_name': '',
         });
 
+        await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('profile')
+            .doc('medicalinfo')
+            .set({
+          'allergies': '',
+          'blood_group': '',
+          'condition': '',
+          'doctor_name': '',
+          'doctor_phone': '',
+          'medication': '',
+        });
+
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),

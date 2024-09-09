@@ -1,6 +1,10 @@
+import 'package:alertx/screens/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ContactViewPage extends StatefulWidget {
   @override
@@ -11,16 +15,16 @@ class _ContactViewPageState extends State<ContactViewPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  late final _contact1name = '';
-  final _contact1 = '';
-  final _contact2name = '';
-  final _contact2 = '';
-  final _contact3name = '';
-  final _contact3 = '';
-  final _contact4name = '';
-  final _contact4 = '';
-  final _contact5name = '';
-  final _contact5 = '';
+  late String _contact1name = '';
+  late String _contact1 = '';
+  late String _contact2name = '';
+  late String _contact2 = '';
+  late String _contact3name = '';
+  late String _contact3 = '';
+  late String _contact4name = '';
+  late String _contact4 = '';
+  late String _contact5name = '';
+  late String _contact5 = '';
 
   @override
   void initState() {
@@ -60,7 +64,9 @@ class _ContactViewPageState extends State<ContactViewPage> {
       }
     }
   }
-
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    await FlutterPhoneDirectCaller.callNumber(phoneNumber);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,74 +74,83 @@ class _ContactViewPageState extends State<ContactViewPage> {
         title: Text('Contact Information'),
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: 20.0, right: 20.0), // Add padding only to left and right
+        padding: EdgeInsets.only(
+            left: 10.0, right: 10.0), // Add padding only to left and right
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Text('Contact 1 Name: $_contact1name'),
-                      Text('Contact 1 Number: $_contact1'),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Text('Contact 2 Name: $_contact2name'),
-                      Text('Contact 2 Number: $_contact2'),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Text('Contact 3 Name: $_contact3name'),
-                      Text('Contact 3 Number: $_contact3'),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Text('Contact 4 Name: $_contact4name'),
-                      Text('Contact 4 Number: $_contact4'),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      Text('Contact 5 Name: $_contact5name'),
-                      Text('Contact 5 Number: $_contact5'),
-                    ],
-                  ),
-                ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemCount: 5,
+
+                itemBuilder: (context, index) {
+                  String contactName = '';
+                  String contactNumber = '';
+
+                  switch (index) {
+                    case 0:
+                      contactName = _contact1name;
+                      contactNumber = _contact1;
+                      break;
+                    case 1:
+                      contactName = _contact2name;
+                      contactNumber = _contact2;
+                      break;
+                    case 2:
+                      contactName = _contact3name;
+                      contactNumber = _contact3;
+                      break;
+                    case 3:
+                      contactName = _contact4name;
+                      contactNumber = _contact4;
+                      break;
+                    case 4:
+                      contactName = _contact5name;
+                      contactNumber = _contact5;
+                      break;
+                  }
+
+                  if (contactNumber.isNotEmpty) {
+                    return ListTile(
+                      title: Text('Contact ${index + 1}'),
+                      subtitle:
+                          Text('Name: $contactName \n Number: $contactNumber'),
+                      leading: Icon(Icons.contacts_rounded),
+                      trailing: IconButton(
+
+                          onPressed: () {
+                            _makePhoneCall(contactNumber);
+                          },
+                          icon: Icon(MdiIcons.phone)),
+
+                    );
+                  } else {
+                    return Container(); // Return an empty container if contact is null
+                  }
+                },
+
               ),
             ],
           ),
         ),
       ),
-    );
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ContactPage()),
+          );
+        },
+        backgroundColor: Color(0xFF3045D3),
+        label: Text(
+          'Add Contact',
+          style: TextStyle(color: Colors.white),
+        ),
+        icon: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),    );
   }
 }
