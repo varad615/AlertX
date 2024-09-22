@@ -64,15 +64,15 @@ class _ViewMedicalInfoPageState extends State<ViewMedicalInfoPage> {
         child: _medicalInfo == null
             ? Center(child: CircularProgressIndicator())
             : ListView(
-          children: [
-            _buildInfoCard('Doctor\'s Name', _medicalInfo?['doctor_name']),
-            _buildDoctorPhoneCard(_medicalInfo?['doctor_phone']),
-            _buildInfoCard('Blood Group', _medicalInfo?['blood_group']),
-            _buildInfoCard('Allergies', _medicalInfo?['allergies']),
-            _buildInfoCard('Condition', _medicalInfo?['condition']),
-            _buildInfoCard('Medication', _medicalInfo?['medication']),
-          ],
-        ),
+                children: [
+                  _buildInfoCard('Doctor\'s Name', _medicalInfo?['doctor_name']),
+                  _buildDoctorPhoneCard(_medicalInfo?['doctor_phone']),
+                  _buildInfoCard('Blood Group', _medicalInfo?['blood_group']),
+                  _buildArrayInfoCard('Allergies', _medicalInfo?['allergies']),
+                  _buildInfoCard('Condition', _medicalInfo?['condition']),
+                  _buildArrayInfoCard('Medications', _medicalInfo?['medication']),
+                ],
+              ),
       ),
     );
   }
@@ -118,7 +118,7 @@ class _ViewMedicalInfoPageState extends State<ViewMedicalInfoPage> {
     );
   }
 
-  // Generic card builder for other fields
+  // Generic card builder for string fields
   Widget _buildInfoCard(String title, String? value) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -130,6 +130,46 @@ class _ViewMedicalInfoPageState extends State<ViewMedicalInfoPage> {
       child: ListTile(
         title: Text(title),
         subtitle: Text(value?.isNotEmpty == true ? value! : 'No information added'),
+      ),
+    );
+  }
+
+  // Card builder for array fields like allergies and medications
+  Widget _buildArrayInfoCard(String title, List<dynamic>? values) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      elevation: 0, // No elevation
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: Colors.blue, width: 2), // Blue border
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 8.0),
+            if (values == null || values.isEmpty)
+              Text('No information added', style: TextStyle(fontSize: 14))
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: values
+                    .map((value) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Text(
+                            value.toString(),
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ))
+                    .toList(),
+              ),
+          ],
+        ),
       ),
     );
   }

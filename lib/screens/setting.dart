@@ -1,7 +1,4 @@
-import 'package:alertx/screens/battery.dart';
 import 'package:alertx/screens/contact.dart';
-import 'package:alertx/screens/geo_fencing.dart';
-import 'package:alertx/screens/geo_setting.dart';
 import 'package:alertx/screens/medical_info.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
