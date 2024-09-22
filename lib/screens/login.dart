@@ -16,6 +16,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool _obscurePassword = true; // To control password visibility
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,18 +55,26 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(height: 20),
                 TextFormField(
                   controller: _passwordController,
+                  obscureText: _obscurePassword, // Toggles password visibility
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(
-                      borderSide:
-                      BorderSide(color: Color(0xFF3045D3)), // Border color
+                      borderSide: BorderSide(color: Color(0xFF3045D3)), // Border color
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Color(0xFF3045D3)), // Focused border color
+                      borderSide: BorderSide(color: Color(0xFF3045D3)), // Focused border color
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
                     ),
                   ),
-                  obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a password';

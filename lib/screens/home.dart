@@ -1,5 +1,6 @@
 import 'package:alertx/screens/contact.dart';
 import 'package:alertx/screens/medical_info_view.dart';
+import 'package:alertx/screens/medical_near_me.dart';
 import 'package:alertx/screens/profile.dart';
 import 'package:alertx/screens/setting.dart';
 import 'package:alertx/screens/sos.dart';
@@ -261,6 +262,42 @@ class _HomeScreenState extends State<HomePage> {
                           onTap: () {
                             Navigator.push(
                               context,
+                              MaterialPageRoute(builder: (context) => NearbyMedicalStoresPage()),
+                            );
+                            // Handle gesture box 2 press
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(20.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Color(0xFF343797), width: 2.0), // Add a blue border
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  MdiIcons.pill,
+                                  size: 50,
+                                  color: Color(0xFF343797),
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  'Medical \n Near Me',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF343797)),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10), // add some space between the gesture boxes
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
                               MaterialPageRoute(builder: (context) => ProfileScreen()),
                             );
                             // Handle gesture box 2 press
@@ -282,7 +319,7 @@ class _HomeScreenState extends State<HomePage> {
                                 ),
                                 SizedBox(height: 10),
                                 Text(
-                                  'Account',
+                                  'Account \n ',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
                                 ),
@@ -291,7 +328,12 @@ class _HomeScreenState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 10), // add some space between the gesture boxes
+                    ],
+                  ),
+                  SizedBox(height: 10), // add some space between the rows of gesture boxes
+                  Row(
+                    children: [
+                      // add some space between the gesture boxes
                       Expanded(
                         child: GestureDetector(
                           onTap: () {

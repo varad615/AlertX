@@ -1,8 +1,6 @@
 import 'package:alertx/screens/demo.dart';
 import 'package:alertx/screens/home.dart';
 import 'package:alertx/screens/start.dart';
-// import 'package:alertx/screens/home.dart';
-// import 'package:alertx/screens/start.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
