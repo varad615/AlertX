@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contacts_service/contacts_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ContactPage extends StatefulWidget {
   @override
@@ -94,6 +96,30 @@ class _ContactPageState extends State<ContactPage> {
     }
   }
 
+  Future<void> _selectContact(TextEditingController nameController, TextEditingController numberController) async {
+    if (await Permission.contacts.request().isGranted) {
+      final Contact? contact = await ContactsService.openDeviceContactPicker();
+
+      if (contact != null && contact.phones != null && contact.phones!.isNotEmpty) {
+        setState(() {
+          nameController.text = contact.displayName ?? '';
+          numberController.text = contact.phones!.first.value ?? '';
+        });
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Permission to access contacts is denied')),
+      );
+    }
+  }
+
+  void _removeContact(TextEditingController nameController, TextEditingController numberController) {
+    setState(() {
+      nameController.clear();
+      numberController.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,119 +127,24 @@ class _ContactPageState extends State<ContactPage> {
         title: Text('Contact Information'),
       ),
       body: Padding(
-        padding: EdgeInsets.only(left: 20.0, right: 20.0), // Add padding only to left and right
+        padding: EdgeInsets.only(left: 20.0, right: 20.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _contact1nameController,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 1 Name',
-                        ),
-                      ),
-                      TextFormField(
-                        controller: _contact1Controller,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 1 Number',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildContactCard(
+                'Contact 1 Name', _contact1nameController, _contact1Controller
               ),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _contact2nameController,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 2 Name',
-                        ),
-                      ),
-                      TextFormField(
-                        controller: _contact2Controller,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 2 Number',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildContactCard(
+                'Contact 2 Name', _contact2nameController, _contact2Controller
               ),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _contact3nameController,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 3 Name',
-                        ),
-                      ),
-                      TextFormField(
-                        controller: _contact3Controller,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 3 Number',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildContactCard(
+                'Contact 3 Name', _contact3nameController, _contact3Controller
               ),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _contact4nameController,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 4 Name',
-                        ),
-                      ),
-                      TextFormField(
-                        controller: _contact4Controller,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 4 Number',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildContactCard(
+                'Contact 4 Name', _contact4nameController, _contact4Controller
               ),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _contact5nameController,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 5 Name',
-                        ),
-                      ),
-                      TextFormField(
-                        controller: _contact5Controller,
-                        decoration: InputDecoration(
-                          labelText: 'Contact 5 Number',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              _buildContactCard(
+                'Contact 5 Name', _contact5nameController, _contact5Controller
               ),
               SizedBox(height: 20),
               SizedBox(
@@ -222,13 +153,68 @@ class _ContactPageState extends State<ContactPage> {
                   onPressed: _setContacts,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF3045D3),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),elevation: 0,shadowColor: Colors.transparent
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
                   ),
-                  child: Text('Set Contacts', style: TextStyle(color: Colors.white),),
+                  child: Text('Set Contacts', style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContactCard(String labelText, TextEditingController nameController, TextEditingController numberController) {
+    final bool isContactSelected = nameController.text.isNotEmpty && numberController.text.isNotEmpty;
+
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: isContactSelected
+                      ? TextFormField(
+                          controller: nameController,
+                          decoration: InputDecoration(
+                            labelText: labelText,
+                          ),
+                        )
+                      : Text(
+                          'No contact selected',
+                          style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                        ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.contact_page),
+                  onPressed: () => _selectContact(nameController, numberController),
+                ),
+              ],
+            ),
+            if (isContactSelected)
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      numberController.text.isEmpty ? 'Contact Number' : numberController.text,
+                      style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => _removeContact(nameController, numberController),
+                  ),
+                ],
+              ),
+          ],
         ),
       ),
     );

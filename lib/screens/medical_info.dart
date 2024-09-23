@@ -15,7 +15,16 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
   final TextEditingController _conditionController = TextEditingController();
 
   String? _selectedBloodGroup;
-  final List<String> _bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+  final List<String> _bloodGroups = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-'
+  ];
 
   // Dynamic list controllers for allergies and medications
   List<TextEditingController> _allergiesControllers = [];
@@ -73,10 +82,17 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
     final user = _auth.currentUser;
     if (user != null) {
       // Convert controllers to a list of strings
-      List<String> allergies = _allergiesControllers.map((controller) => controller.text).toList();
-      List<String> medications = _medicationsControllers.map((controller) => controller.text).toList();
+      List<String> allergies =
+          _allergiesControllers.map((controller) => controller.text).toList();
+      List<String> medications =
+          _medicationsControllers.map((controller) => controller.text).toList();
 
-      await _firestore.collection('users').doc(user.uid).collection('profile').doc('medicalinfo').update({
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('profile')
+          .doc('medicalinfo')
+          .update({
         'doctor_name': _doctorNameController.text,
         'doctor_phone': _doctorPhoneController.text,
         'blood_group': _selectedBloodGroup,
@@ -84,7 +100,8 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
         'condition': _conditionController.text,
         'medication': medications,
       });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Medical info updated successfully!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Medical info updated successfully!')));
     }
   }
 
@@ -156,7 +173,9 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
                       ),
                       SizedBox(height: 10),
                       DropdownButtonFormField<String>(
-                        value: _bloodGroups.contains(_selectedBloodGroup) ? _selectedBloodGroup : null,
+                        value: _bloodGroups.contains(_selectedBloodGroup)
+                            ? _selectedBloodGroup
+                            : null,
                         decoration: InputDecoration(
                           labelText: 'Blood Group',
                           border: OutlineInputBorder(),
@@ -193,30 +212,39 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: _allergiesControllers.length,
                         itemBuilder: (context, index) {
-                          return Row(
+                          return Column(
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _allergiesControllers[index],
-                                  decoration: InputDecoration(
-                                    labelText: 'Allergy',
-                                    border: OutlineInputBorder(),
+                              SizedBox(height: 10), // Top spacing
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _allergiesControllers[index],
+                                      decoration: InputDecoration(
+                                        labelText: 'Allergy',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  if (_allergiesControllers.length > 1)
+                                    IconButton(
+                                      icon: Icon(Icons.remove_circle,
+                                          color: Colors.red),
+                                      onPressed: () =>
+                                          _removeAllergyField(index),
+                                    ),
+                                ],
                               ),
-                              if (_allergiesControllers.length > 1)
-                                IconButton(
-                                  icon: Icon(Icons.remove_circle, color: Colors.red),
-                                  onPressed: () => _removeAllergyField(index),
-                                ),
                             ],
                           );
                         },
                       ),
+
                       TextButton.icon(
                         onPressed: _addAllergyField,
                         icon: Icon(Icons.add, color: Colors.white),
-                        label: Text('Add More', style: TextStyle(color: Colors.white)),
+                        label: Text('Add More',
+                            style: TextStyle(color: Colors.white)),
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.blue,
                           shape: RoundedRectangleBorder(
@@ -244,22 +272,30 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
                         physics: NeverScrollableScrollPhysics(),
                         itemCount: _medicationsControllers.length,
                         itemBuilder: (context, index) {
-                          return Row(
+                          return Column(
                             children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: _medicationsControllers[index],
-                                  decoration: InputDecoration(
-                                    labelText: 'Medication',
-                                    border: OutlineInputBorder(),
+                              SizedBox(height: 10), // Top spacing
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextField(
+                                      controller:
+                                          _medicationsControllers[index],
+                                      decoration: InputDecoration(
+                                        labelText: 'Medication',
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  if (_medicationsControllers.length > 1)
+                                    IconButton(
+                                      icon: Icon(Icons.remove_circle,
+                                          color: Colors.red),
+                                      onPressed: () =>
+                                          _removeMedicationField(index),
+                                    ),
+                                ],
                               ),
-                              if (_medicationsControllers.length > 1)
-                                IconButton(
-                                  icon: Icon(Icons.remove_circle, color: Colors.red),
-                                  onPressed: () => _removeMedicationField(index),
-                                ),
                             ],
                           );
                         },
@@ -267,7 +303,8 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
                       TextButton.icon(
                         onPressed: _addMedicationField,
                         icon: Icon(Icons.add, color: Colors.white),
-                        label: Text('Add More', style: TextStyle(color: Colors.white)),
+                        label: Text('Add More',
+                            style: TextStyle(color: Colors.white)),
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.blue,
                           shape: RoundedRectangleBorder(
@@ -301,7 +338,8 @@ class _MedicalInfoPageState extends State<MedicalInfoPage> {
               // Update Button
               ElevatedButton(
                 onPressed: _updateMedicalInfo,
-                child: Text('Update Medical Info', style: TextStyle(color: Colors.white)),
+                child: Text('Update Medical Info',
+                    style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
